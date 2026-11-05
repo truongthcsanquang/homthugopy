@@ -167,16 +167,29 @@
     f.querySelectorAll(".loi").forEach(function (x) { x.classList.remove("loi"); });
   });
 
-  // Lấy vị trí theo IP (gần đúng, không cần xin quyền)
-  function layViTriTheoIP(xong) {
-    fetch("https://ipapi.co/json/").then(function (r) { return r.json(); }).then(function (d) {
+  // Lấy vị trí theo IP (gần đúng, không cần xin quyền) — thử lần lượt 2 dịch vụ
+  function diaChiMaps(lat, lng, noi) {
+    return "https://maps.google.com/?q=" + lat + "," + lng + " (theo IP" + (noi ? ", khu vực: " + noi : "") + ")";
+  }
+
+  function thuDichVuThu2(xong) {
+    fetch("https://get.geojs.io/v1/ip/geo.json").then(function (r) { return r.json(); }).then(function (d) {
       if (d && d.latitude && d.longitude) {
-        xong("https://maps.google.com/?q=" + d.latitude + "," + d.longitude +
-             " (theo IP, khu vực: " + (d.city || "") + ", " + (d.region || "") + ")");
+        xong(diaChiMaps(d.latitude, d.longitude, [d.city, d.region].filter(Boolean).join(", ")));
       } else {
         xong("");
       }
     }).catch(function () { xong(""); });
+  }
+
+  function layViTriTheoIP(xong) {
+    fetch("https://ipapi.co/json/").then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.latitude && d.longitude) {
+        xong(diaChiMaps(d.latitude, d.longitude, [d.city, d.region].filter(Boolean).join(", ")));
+      } else {
+        thuDichVuThu2(xong);
+      }
+    }).catch(function () { thuDichVuThu2(xong); });
   }
 
   // Lấy vị trí GPS; nếu bị từ chối hoặc không hỗ trợ thì lấy theo IP
