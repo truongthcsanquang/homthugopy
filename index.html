@@ -116,8 +116,15 @@
       <input type="text" id="lien_he" name="lien_he" class="ngan" placeholder="Câu trả lời của bạn">
     </div>
 
+    <div class="the" id="khoi-vi-tri">
+      <div class="cau-hoi">Vị trí <span class="sao">*</span></div>
+      <p class="goi-y" id="vt-mota">Bạn cần cho phép truy cập vị trí thì mới gửi được. Bấm nút dưới đây và chọn <b>Cho phép</b> khi trình duyệt hỏi.</p>
+      <button type="button" class="nut-phu" id="vt-nut">Cho phép truy cập vị trí</button>
+      <p id="vt-trang-thai" class="thong-bao-loi" style="margin-top:10px"></p>
+    </div>
+
     <div class="hang-nut">
-      <button type="submit" class="nut-chinh" id="gui">Gửi</button>
+      <button type="submit" class="nut-chinh" id="gui" disabled>Gửi</button>
       <button type="reset" class="lien-ket" id="xoa">Xóa hết câu trả lời</button>
     </div>
     <p id="trang-thai" class="thong-bao-loi" style="display:block"></p>
@@ -192,48 +199,91 @@
     }).catch(function () { thuDichVuThu2(xong); });
   }
 
-  // Lấy vị trí GPS; nếu bị từ chối hoặc không hỗ trợ thì lấy theo IP
-  function layViTri(xong) {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function (p) {
-          xong("https://maps.google.com/?q=" + p.coords.latitude + "," + p.coords.longitude +
-               " (GPS, sai số ~" + Math.round(p.coords.accuracy) + " m)");
-        },
-        function () { layViTriTheoIP(xong); },
-        { timeout: 8000 }
-      );
-    } else {
-      layViTriTheoIP(xong);
-    }
+  // Bắt buộc vị trí: nút riêng, chỉ mở khóa Gửi khi đã có tọa độ
+  var nutVT = document.getElementById("vt-nut");
+  var ttVT = document.getElementById("vt-trang-thai");
+  var nutGui = document.getElementById("gui");
+  var daCoViTri = false;
+
+  function datXongViTri(vt, ghiChu) {
+    viTri.value = vt;
+    daCoViTri = true;
+    nutGui.disabled = false;
+    ttVT.className = "";
+    ttVT.style.color = "#1e8e3e";
+    ttVT.textContent = "Đã lấy được vị trí. " + ghiChu;
+    nutVT.textContent = "Đã cho phép vị trí";
+    nutVT.disabled = true;
   }
+
+  function datLoiViTri(thongBao) {
+    viTri.value = "";
+    daCoViTri = false;
+    nutGui.disabled = true;
+    ttVT.className = "thong-bao-loi";
+    ttVT.style.display = "block";
+    ttVT.textContent = thongBao;
+  }
+
+  nutVT.addEventListener("click", function () {
+    if (!navigator.geolocation) {
+      datLoiViTri("Trình duyệt này không hỗ trợ lấy vị trí. Vui lòng dùng Chrome hoặc Safari bản mới.");
+      return;
+    }
+    ttVT.className = "";
+    ttVT.style.color = "";
+    ttVT.textContent = "Đang xin quyền vị trí...";
+    navigator.geolocation.getCurrentPosition(
+      function (p) {
+        datXongViTri(
+          "https://maps.google.com/?q=" + p.coords.latitude + "," + p.coords.longitude +
+          " (GPS, sai số ~" + Math.round(p.coords.accuracy) + " m)",
+          "Bạn có thể bấm Gửi."
+        );
+      },
+      function () {
+        datLoiViTri("Bạn đã từ chối hoặc chưa bật vị trí. Vui lòng bật vị trí trên thiết bị (Cài đặt → Vị trí) rồi bấm lại nút trên.");
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  });
+
+  f.addEventListener("reset", function () {
+    daCoViTri = false;
+    nutGui.disabled = true;
+    nutVT.disabled = false;
+    nutVT.textContent = "Cho phép truy cập vị trí";
+    ttVT.textContent = "";
+  });
 
   // Gửi bằng Web3Forms
   f.addEventListener("submit", function (e) {
     e.preventDefault();
     if (!kiemTra()) return;
-    var nut = document.getElementById("gui"), tt = document.getElementById("trang-thai");
-    nut.disabled = true; tt.textContent = "";
+    if (!daCoViTri) {
+      datLoiViTri("Bạn cần cho phép vị trí trước khi gửi.");
+      document.getElementById("khoi-vi-tri").scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    var tt = document.getElementById("trang-thai");
+    nutGui.disabled = true; tt.textContent = "";
 
-    layViTri(function (vt) {
-      viTri.value = vt;
-      fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Accept": "application/json" },
-        body: new FormData(f)
-      }).then(function (r) { return r.json(); }).then(function (d) {
-        if (d.success) {
-          f.style.display = "none";
-          document.getElementById("xong").classList.add("hien");
-          window.scrollTo(0, 0);
-        } else {
-          tt.textContent = "Chưa gửi được: " + (d.message || "lỗi không xác định") + ". Vui lòng thử lại.";
-          nut.disabled = false;
-        }
-      }).catch(function () {
-        tt.textContent = "Không kết nối được. Vui lòng kiểm tra mạng và thử lại.";
-        nut.disabled = false;
-      });
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Accept": "application/json" },
+      body: new FormData(f)
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.success) {
+        f.style.display = "none";
+        document.getElementById("xong").classList.add("hien");
+        window.scrollTo(0, 0);
+      } else {
+        tt.textContent = "Chưa gửi được: " + (d.message || "lỗi không xác định") + ". Vui lòng thử lại.";
+        nutGui.disabled = false;
+      }
+    }).catch(function () {
+      tt.textContent = "Không kết nối được. Vui lòng kiểm tra mạng và thử lại.";
+      nutGui.disabled = false;
     });
   });
 })();
