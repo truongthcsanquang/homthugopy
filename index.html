@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hòm thư góp ý – Trường THCS An Quang</title>
+<style>
+  :root { --tim: #673ab7; --nen: #f0ebf8; --chu: #202124; --phu: #5f6368; --loi: #d93025; --vien: #dadce0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--nen); color: var(--chu); font-family: Roboto, Arial, sans-serif; font-size: 14px; line-height: 1.5; }
+  .khung { max-width: 640px; margin: 0 auto; padding: 12px 12px 48px; }
+  .the { background: #fff; border: 1px solid var(--vien); border-radius: 8px; padding: 22px 24px; margin-bottom: 12px; }
+  .the.loi { border-color: var(--loi); }
+  .tieu-de { border-top: 10px solid var(--tim); }
+  h1 { margin: 0 0 12px; font-size: 28px; font-weight: 400; line-height: 1.25; }
+  .mo-ta { color: var(--chu); font-size: 13px; margin: 0; }
+  .bat-buoc-ghi { color: var(--loi); font-size: 13px; margin: 14px 0 0; }
+  label.cau-hoi, .cau-hoi { display: block; font-size: 15px; margin-bottom: 6px; font-weight: 400; }
+  .sao { color: var(--loi); }
+  .goi-y { color: var(--phu); font-size: 13px; margin: 0 0 10px; }
+  .lua-chon { display: flex; align-items: center; gap: 12px; padding: 7px 0; cursor: pointer; }
+  .lua-chon input { accent-color: var(--tim); width: 18px; height: 18px; margin: 0; }
+  select, input[type=text], textarea { font: inherit; color: var(--chu); }
+  select { padding: 12px; border: 1px solid var(--vien); border-radius: 4px; background: #fff; min-width: 260px; max-width: 100%; }
+  input[type=text], textarea { width: 100%; border: 0; border-bottom: 1px solid var(--vien); padding: 8px 0; background: transparent; outline: none; resize: vertical; }
+  input[type=text]:focus, textarea:focus { border-bottom: 2px solid var(--tim); padding-bottom: 7px; }
+  input.ngan { width: 50%; min-width: 160px; }
+  .thong-bao-loi { display: none; color: var(--loi); font-size: 12px; margin-top: 8px; }
+  .the.loi .thong-bao-loi { display: block; }
+  .hang-nut { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+  button { font: inherit; cursor: pointer; border-radius: 4px; padding: 9px 24px; font-weight: 500; }
+  .nut-chinh { background: var(--tim); color: #fff; border: 0; }
+  .nut-chinh:disabled { opacity: .6; cursor: default; }
+  .nut-phu { background: #fff; color: var(--tim); border: 1px solid var(--vien); }
+  .lien-ket { background: none; border: 0; color: var(--tim); padding: 9px 0; }
+  .trang { display: none; }
+  .trang.hien { display: block; }
+  .cam-on h2 { font-weight: 400; margin: 0 0 8px; }
+  .an { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+<div class="khung">
+
+<form id="bieumau">
+  <input type="hidden" name="access_key" value="DÁN_ACCESS_KEY_VÀO_ĐÂY">
+  <input type="hidden" name="subject" value="Góp ý mới – THCS An Quang">
+  <input type="hidden" name="from_name" value="Hòm thư góp ý">
+  <input type="checkbox" name="botcheck" class="an" tabindex="-1" autocomplete="off">
+  <input type="hidden" name="vi_tri" id="vi_tri">
+
+  <div class="the tieu-de">
+    <h1>Hòm thư góp ý – Trường THCS An Quang</h1>
+    <p class="mo-ta">Mọi ý kiến của phụ huynh, học sinh, cán bộ và giáo viên đều được nhà trường ghi nhận để làm tốt hơn mỗi ngày.<br>
+    Biểu mẫu không yêu cầu đăng nhập và không thu thập email. Phần thông tin cá nhân ở cuối là không bắt buộc, bạn có thể để trống để gửi ẩn danh.</p>
+    <p class="bat-buoc-ghi">* Biểu thị câu hỏi bắt buộc</p>
+  </div>
+
+  <!-- NỘI DUNG -->
+  <div class="trang hien" id="trang1">
+
+    <div class="the" data-bb="ban_la">
+      <div class="cau-hoi">Bạn là <span class="sao">*</span></div>
+      <label class="lua-chon"><input type="radio" name="ban_la" value="Phụ huynh"> Phụ huynh</label>
+      <label class="lua-chon"><input type="radio" name="ban_la" value="Học sinh"> Học sinh</label>
+      <label class="lua-chon"><input type="radio" name="ban_la" value="Giáo viên, nhân viên"> Giáo viên, nhân viên</label>
+      <label class="lua-chon"><input type="radio" name="ban_la" value="Khác"> Khác</label>
+      <div class="thong-bao-loi">Đây là một câu hỏi bắt buộc</div>
+    </div>
+
+    <div class="the" data-bb="loai_y_kien">
+      <div class="cau-hoi">Loại ý kiến <span class="sao">*</span></div>
+      <label class="lua-chon"><input type="radio" name="loai_y_kien" value="Góp ý"> Góp ý</label>
+      <label class="lua-chon"><input type="radio" name="loai_y_kien" value="Phản ánh"> Phản ánh</label>
+      <label class="lua-chon"><input type="radio" name="loai_y_kien" value="Kiến nghị"> Kiến nghị</label>
+      <label class="lua-chon"><input type="radio" name="loai_y_kien" value="Khen ngợi"> Khen ngợi</label>
+      <div class="thong-bao-loi">Đây là một câu hỏi bắt buộc</div>
+    </div>
+
+    <div class="the" data-bb="linh_vuc">
+      <label class="cau-hoi" for="linh_vuc">Lĩnh vực <span class="sao">*</span></label>
+      <select id="linh_vuc" name="linh_vuc">
+        <option value="">Chọn</option>
+        <option>An ninh, bạo lực học đường</option>
+        <option>Dạy và học, chuyên môn</option>
+        <option>Cơ sở vật chất, vệ sinh</option>
+        <option>Các khoản thu, tài chính</option>
+        <option>Thái độ, ứng xử của cán bộ, giáo viên</option>
+        <option>Giao thông, an toàn cổng trường</option>
+        <option>Khác</option>
+      </select>
+      <div class="thong-bao-loi">Đây là một câu hỏi bắt buộc</div>
+    </div>
+
+    <div class="the" data-bb="noi_dung">
+      <label class="cau-hoi" for="noi_dung">Nội dung <span class="sao">*</span></label>
+      <p class="goi-y">Mô tả rõ sự việc, thời gian, địa điểm (nếu có) và đề xuất của bạn.</p>
+      <textarea id="noi_dung" name="noi_dung" rows="3" placeholder="Câu trả lời của bạn"></textarea>
+      <div class="thong-bao-loi">Đây là một câu hỏi bắt buộc</div>
+    </div>
+
+    <div class="the">
+      <label class="cau-hoi" for="lop">Lớp</label>
+      <p class="goi-y">Nếu ý kiến liên quan đến một lớp cụ thể. Ví dụ: 8.1, 8.2, 8.3, 8.4, ...</p>
+      <input type="text" id="lop" name="lop" class="ngan" placeholder="Câu trả lời của bạn">
+    </div>
+
+    <div class="the">
+      <div class="cau-hoi">Thông tin cá nhân (không bắt buộc)</div>
+      <p class="goi-y">Để trống nếu bạn muốn gửi ẩn danh. Thông tin chỉ dùng để nhà trường phản hồi khi cần.</p>
+
+      <label class="cau-hoi" for="ho_ten" style="margin-top:14px">Họ và tên (không bắt buộc)</label>
+      <input type="text" id="ho_ten" name="ho_ten" placeholder="Câu trả lời của bạn">
+
+      <label class="cau-hoi" for="lien_he" style="margin-top:20px">Số điện thoại (không bắt buộc)</label>
+      <input type="text" id="lien_he" name="lien_he" class="ngan" placeholder="Câu trả lời của bạn">
+    </div>
+
+    <div class="hang-nut">
+      <button type="submit" class="nut-chinh" id="gui">Gửi</button>
+      <button type="reset" class="lien-ket" id="xoa">Xóa hết câu trả lời</button>
+    </div>
+    <p id="trang-thai" class="thong-bao-loi" style="display:block"></p>
+  </div>
+</form>
+
+<div class="the cam-on trang" id="xong">
+  <div class="tieu-de" style="border-top:0"></div>
+  <h2>Cảm ơn bạn đã gửi ý kiến</h2>
+  <p>Ý kiến của bạn đã được gửi đến nhà trường.</p>
+  <button type="button" class="lien-ket" onclick="location.reload()">Gửi ý kiến khác</button>
+</div>
+
+</div>
+
+<script>
+(function () {
+  var f = document.getElementById("bieumau");
+  var viTri = document.getElementById("vi_tri");
+
+  // Kiểm tra các câu hỏi bắt buộc ở trang 1
+  function kiemTra() {
+    var ok = true, dau = null;
+    f.querySelectorAll("[data-bb]").forEach(function (the) {
+      var ten = the.getAttribute("data-bb"), co;
+      var o = f.elements[ten];
+      if (o.type === "radio" || (o.length && o[0].type === "radio")) {
+        co = !!f.querySelector('input[name="' + ten + '"]:checked');
+      } else {
+        co = o.value.trim() !== "";
+      }
+      the.classList.toggle("loi", !co);
+      if (!co) { ok = false; if (!dau) dau = the; }
+    });
+    if (dau) dau.scrollIntoView({ behavior: "smooth", block: "center" });
+    return ok;
+  }
+
+  // Bỏ cảnh báo khi người dùng nhập lại
+  f.addEventListener("input", function (e) {
+    var the = e.target.closest("[data-bb]");
+    if (the) the.classList.remove("loi");
+  });
+
+  f.addEventListener("reset", function () {
+    viTri.value = "";
+    f.querySelectorAll(".loi").forEach(function (x) { x.classList.remove("loi"); });
+  });
+
+  // Lấy vị trí theo IP (gần đúng, không cần xin quyền)
+  function layViTriTheoIP(xong) {
+    fetch("https://ipapi.co/json/").then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.latitude && d.longitude) {
+        xong("https://maps.google.com/?q=" + d.latitude + "," + d.longitude +
+             " (theo IP, khu vực: " + (d.city || "") + ", " + (d.region || "") + ")");
+      } else {
+        xong("");
+      }
+    }).catch(function () { xong(""); });
+  }
+
+  // Lấy vị trí GPS; nếu bị từ chối hoặc không hỗ trợ thì lấy theo IP
+  function layViTri(xong) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (p) {
+          xong("https://maps.google.com/?q=" + p.coords.latitude + "," + p.coords.longitude +
+               " (GPS, sai số ~" + Math.round(p.coords.accuracy) + " m)");
+        },
+        function () { layViTriTheoIP(xong); },
+        { timeout: 8000 }
+      );
+    } else {
+      layViTriTheoIP(xong);
+    }
+  }
+
+  // Gửi bằng Web3Forms
+  f.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!kiemTra()) return;
+    var nut = document.getElementById("gui"), tt = document.getElementById("trang-thai");
+    nut.disabled = true; tt.textContent = "";
+
+    layViTri(function (vt) {
+      viTri.value = vt;
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(f)
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (d.success) {
+          f.style.display = "none";
+          document.getElementById("xong").classList.add("hien");
+          window.scrollTo(0, 0);
+        } else {
+          tt.textContent = "Chưa gửi được: " + (d.message || "lỗi không xác định") + ". Vui lòng thử lại.";
+          nut.disabled = false;
+        }
+      }).catch(function () {
+        tt.textContent = "Không kết nối được. Vui lòng kiểm tra mạng và thử lại.";
+        nut.disabled = false;
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
